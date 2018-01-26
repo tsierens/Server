@@ -1,6 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Connect Four Analysis">
+    <meta name="author" content="Todd Sierens">
+
+    <title>Connect Four</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="../static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="../static/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/creative.min.css" rel="stylesheet">
+    
+    <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+</head>
+<body>
+<div class="jumbotron text-center">
+    <h1>Asynchronous Minimax Results</h1>
+</div>
+<div class="container-fluid"  id=board>
+    <div class="text-center" id="results">
+    </div>
+</div>
+<div class = "container-fluid text-center" id= "moves_container">
+        moves:
+      <input type="text" name="moves" value= "" id="moves">
+      <br>
+         rows:
+      <input type="text" name="moves" value= "6" id="rows">
+      <br>
+      columns:
+      <input type="text" name="moves" value= "7" id="columns"><br>
+      <button id="button" onclick="evaluate_new_moves()"> evaluate </button>
+</div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
     <script>
@@ -71,12 +114,11 @@
             var s = ""
             
             for (var i = 0; i < board.length; i++) {
-                var row = "| "
+                var row = "|"
                 for (var j = 0; j < board[i].length; j++){
-                    if (board[i][j] == 1){row += 'x'}
-                    else if (board[i][j] == -1){row += 'o'}
-                    else {row += '_'}
-                    row += ' | '
+                    if (board[i][j] == 1){row += ' x |'}
+                    else if (board[i][j] == -1){row += ' o |'}
+                    else {row += ' _ |'}
                 }
                 s = row + '<br/>' + s
             }
@@ -87,24 +129,6 @@
         }
     
     </script>
-
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-</head>
-<body>
-<div class="jumbotron">
-    <h1>Asynchronous Minimax Results</h1>
-</div>
-<div class="container" id=board>
-    <div id="results">
-    </div>
-</div>
-<div class = "container" id= "moves_container">
-      moves:<br>
-      <input type="text" name="moves" value= "" id="moves">
-      <br>
-      <button id="button" onclick="evaluate_new_moves()"> evaluate </button>
-</div>
-
 
 </body>
 </html>

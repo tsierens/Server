@@ -4,7 +4,7 @@ from random import random
 from time import sleep
 from threading import Thread, Event
 import sys
-sys.path.append('..')
+sys.path.append('../Connect Four')
 import c4_ab as c4
 c4.init_wrapper()
 
@@ -21,7 +21,7 @@ thread_stop_event = Event()
 available_threads = [Thread() for i in range(5)]
 
 book = {}
-filename = '../c4books/book6x7strong.txt'
+filename = '../Connect Four/c4books/book6x7strong.txt'
 for line in open(filename,'r'):
     key,result = line.split()
     key = long(key)
@@ -129,17 +129,8 @@ def print_board(board):
 
 @app.route("/")
 def main():
-    moves = request.args.get('moves')
-    try:
-        moves = map(int,list(moves))
-        assert(all([move in range(7) for move in moves]))
-    except:
-        return "Invalid entry"
-    board = c4.Board()
-    for move in moves:
-        board.p_update(move)
       
-    return print_board(board)
+    return render_template('index.html')
 
 @app.route("/json")
 def json():
@@ -155,9 +146,11 @@ def json():
         board.p_update(move)
     return jsonify(moves = moves , board = print_board(board))
 
-@app.route("/testsocket")
-def testsocket():    
+@app.route("/c4")
+def testsocket():
     moves = request.args.get('moves')
+    if moves is None:
+        moves = ''
     print moves
     return render_template('c4.html' ,moves=moves)
     
