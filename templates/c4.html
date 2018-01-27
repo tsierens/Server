@@ -54,11 +54,17 @@
         var depth;
         var results_string;
         var id;
+        var rows;
+        var columns;
         $(document).ready(function(){
             //connect to the socket server.
             socket = io.connect('http://' + document.domain + ':' + location.port + '/c4');
             moves = '{{ moves }}';
+            columns = '{{ columns }}';
+            rows = '{{ rows }}';
             document.getElementById("moves").value = moves;
+            document.getElementById("columns").value = columns;
+            document.getElementById("rows").value = rows;
             player = '0';
             move = -1;
             board_string = "";
@@ -68,8 +74,11 @@
             id = Math.floor(Math.random() * 2**32);
             console.log(id);
             $('#moves').keypress(function(e){
-              if(e.keyCode==13){$('#button').click();}
-            });
+              if(e.keyCode==13){$('#button').click();}});
+            $('#rows').keypress(function(e){
+              if(e.keyCode==13){$('#button').click();}});
+            $('#columns').keypress(function(e){
+              if(e.keyCode==13){$('#button').click();}});            
             
             //listen for server updates
             update_listener()
@@ -81,7 +90,7 @@
         function update_listener(){
             socket.on('update', function(msg) {
                 console.log("Received results" + msg.results + ' ' + msg.depth);
-                if (msg.id == id && msg.moves == moves){                    
+                if (msg.id == id && msg.moves == moves && msg.columns == columns && msg.rows == rows){                    
                     player = msg.player;
                     board = msg.board;
                     console.log(board);
@@ -100,12 +109,15 @@
             
         
         function evaluate(){
-            socket.emit('evaluate', {"moves" : moves , "id" : id});
+            id = Math.floor(Math.random() * 2**32);
+            socket.emit('evaluate', {"moves" : moves , "id" : id , "rows" : rows , "columns" : columns});
             
         }
         
         function evaluate_new_moves(){
             moves = document.getElementById("moves").value;
+            columns = document.getElementById("columns").value;
+            rows = document.getElementById("rows").value;
             evaluate();
             document.getElementById("moves").value = moves;
         }

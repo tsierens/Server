@@ -20,13 +20,20 @@ thread_stop_event = Event()
 
 available_threads = [Thread() for i in range(5)]
 
-book = {}
-filename = '../Connect Four/c4books/book6x7strong.txt'
-for line in open(filename,'r'):
-    key,result = line.split()
-    key = long(key)
-    result = int(result)
-    book[key] = result
+books = {}
+for rows in range(4,10):
+    for columns in range(4,10):
+        book = {}
+        books['{}x{}'.format(rows,columns)] = book        
+        filename = '../Connect Four/c4books/book6x7strong.txt'
+        try:
+            for line in open(filename,'r'):
+                key,result = line.split()
+                key = long(key)
+                result = int(result)
+                book[key] = result            
+        except:
+            pass
     
 
 
@@ -53,8 +60,12 @@ def emit_results(d):
     socketio.emit('update', d , namespace='/c4')
 
 def solve(board,moves,identity):
+    global books
+    try:
+        book = books['{}x{}'.format(board.rows,board.columns)]
+    except:
+        book = {}
     print 'solving'
-    global book
     n_moves = len(board.get_log())
     #board_string = print_board(board)
     board_array = get_board_array(board)
@@ -63,9 +74,11 @@ def solve(board,moves,identity):
     solved = set()
     if board.is_over():
         legal = []
-    results = [' = ' if move in legal else 'xxx' for move in range(7)]
+    results = [' = ' if move in legal else 'xxx' for move in range(board.columns)]
     d = {'board': board_array,
          'move':-1,
+         'rows':board.rows,
+         'columns':board.columns,
          'depth': 0,
          'results':'|' + '|'.join(results) + '|' , 
          'player':player,
@@ -73,7 +86,7 @@ def solve(board,moves,identity):
          'moves' : moves,
          'id': identity}
     
-    for depth in range(board.rows * board.columns+1 - n_moves):
+    for depth in range(min(board.rows * board.columns+1 - n_moves , 35)): #todo: add timeout to ab
         print 'depth',depth
         print 'results', results
         d['depth'] = depth
@@ -128,8 +141,7 @@ def print_board(board):
     return big
 
 @app.route("/")
-def main():
-      
+def main():      
     return render_template('index.html')
 
 @app.route("/json")
@@ -148,11 +160,19 @@ def json():
 
 @app.route("/c4")
 def testsocket():
-    moves = request.args.get('moves')
-    if moves is None:
-        moves = ''
-    print moves
-    return render_template('c4.html' ,moves=moves)
+    moves = ''
+    rows = 6
+    columns = 7
+    if request.args.get('moves'):
+        moves = request.args.get('moves')
+    if request.args.get('rows'):
+        rows = int(request.args.get('rows'))
+    if request.args.get('columns'):
+        columns = int(request.args.get('columns'))
+    print 'moves',moves
+    print 'columns', columns
+    print 'rows', rows
+    return render_template('c4.html' ,moves=moves, columns = columns , rows = rows)
     
 socketio = SocketIO(app)
 
@@ -163,6 +183,8 @@ clients = []
 def evaluate(data):
     #socketio.emit('update', {'board': 'Thinking'})
     global available_threads
+    rows = int(data['rows'])
+    columns = int(data['columns'])
     moves = data['moves']
     moves_string = moves
     identity = data['id']
@@ -175,7 +197,7 @@ def evaluate(data):
         assert(all([move in range(7) for move in moves]))
     except:
         return "Invalid entry"
-    board = c4.Board()
+    board = c4.Board(rows,columns)
     for move in moves:
         board.p_update(move)
     board.print_board()
