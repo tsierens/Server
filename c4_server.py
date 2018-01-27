@@ -144,6 +144,14 @@ def print_board(board):
 def main():      
     return render_template('index.html')
 
+@app.route("/about")
+def about():      
+    return render_template('about.html')
+
+@app.route("/reinforcement-learning")
+def about():      
+    return render_template('reinforcement-learning.html')
+
 @app.route("/json")
 def json():
     moves = request.args.get('moves')
