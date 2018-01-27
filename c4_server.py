@@ -21,22 +21,22 @@ thread_stop_event = Event()
 available_threads = [Thread() for i in range(5)]
 
 books = {}
-for rows in range(4,10):
-    for columns in range(4,10):
-        book = {}
-        books['{}x{}'.format(rows,columns)] = book        
-        filename = '../Connect Four/c4books/book6x7strong.txt'
-        try:
-            for line in open(filename,'r'):
-                key,result = line.split()
-                key = long(key)
-                result = int(result)
-                book[key] = result            
-        except:
-            pass
-    
+#for rows in range(4,10):
+#    for columns in range(4,10):
+#        book = {}
+#        books['{}x{}'.format(rows,columns)] = book        
+#        filename = '../Connect Four/c4books/book6x7strong.txt'
+#        try:
+#            for line in open(filename,'r'):
+#                key,result = line.split()
+#                key = long(key)
+#                result = int(result)
+#                book[key] = result            
+#        except:
+#            pass
+   
 
-
+print 'done reading opening books'
 
 
 app = Flask(__name__)
@@ -149,7 +149,7 @@ def about():
     return render_template('about.html')
 
 @app.route("/reinforcement-learning")
-def about():      
+def reinforcement_learning():      
     return render_template('reinforcement-learning.html')
 
 @app.route("/json")
@@ -226,5 +226,7 @@ def disconnect():
     print "Disconnected"
     
 #app.run(threaded = True)
+
+print 'loaded'
             
 
